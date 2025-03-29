@@ -16,7 +16,7 @@ final class CustomHeightPresentationController: UIPresentationController {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
+ 
     override var frameOfPresentedViewInContainerView: CGRect {
         guard let containerView = containerView else { return .zero }
         let height = UIScreen.main.bounds.height / 2.5
@@ -28,8 +28,7 @@ final class CustomHeightPresentationController: UIPresentationController {
     }
     
     override func presentationTransitionWillBegin() {
-        setup()
-        
+        setupUI()
         bgView.alpha = 0
         UIView.animate(withDuration: 0.3) { self.bgView.alpha = 1 }
     }
@@ -44,7 +43,7 @@ final class CustomHeightPresentationController: UIPresentationController {
 
 private extension CustomHeightPresentationController {
     
-    func setup() {
+    func setupUI() {
         setupSubviews()
         setupLayout()
     }

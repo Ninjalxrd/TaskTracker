@@ -8,6 +8,7 @@
     import UIKit
 
     final class TasksViewController: UIViewController, TasksPresenterOutput {
+        
         private let tasksView: TasksView = .init()
         var tableViewDataSource: UITableViewDiffableDataSource<Int, TaskEntity>?
         var presenter: TasksPresenterInput!
@@ -91,6 +92,12 @@
             cell.onUpdateCheckmarkButton = { [weak self] isCompleted in
                 guard let self else { return }
                 self.presenter.updateCheckmarkState(with: task, isCompleted: isCompleted)
+                
+                if isCompleted {
+                    var updatedTask = task
+                    updatedTask.finishedAt = Date.now
+                    presenter.showTaskDetail(for: updatedTask, animate: true)
+                }
                 
                 DispatchQueue.main.async {
                     var updatedTask = task

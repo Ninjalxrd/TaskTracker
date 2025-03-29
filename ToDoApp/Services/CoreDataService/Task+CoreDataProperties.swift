@@ -18,6 +18,7 @@ extension Task {
 
     @NSManaged public var completed: Bool
     @NSManaged public var date: Date?
+    @NSManaged public var FinishedAt: Date?
     @NSManaged public var descriptionOfTask: String?
     @NSManaged public var localId: UUID
     @NSManaged public var primitiveServerId: NSNumber?

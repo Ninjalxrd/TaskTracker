@@ -4,6 +4,7 @@
         <attribute name="completed" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="descriptionOfTask" optional="YES" attributeType="String"/>
+        <attribute name="finishedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="localId" attributeType="UUID" valueTransformerName="NSSecureUnarchiveFromData" usesScalarValueType="NO"/>
         <attribute name="serverId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="title" optional="YES" attributeType="String"/>

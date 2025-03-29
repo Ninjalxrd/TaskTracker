@@ -40,6 +40,7 @@ struct TaskEntity: Hashable {
     var title: String?
     var description: String?
     var date: Date?
+    var finishedAt: Date?
     var completed: Bool
 }
 

@@ -9,6 +9,19 @@ import UIKit
 
 final class TaskDetailView: UIView {
     
+    var onDismissButtonTapped: (() -> Void)?
+    var onDeleteButtonTapped: (() -> Void)?
+    var onDownSwipe: (() -> Void)?
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupUI()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     private lazy var dayAndMonthDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "dd MMM"
@@ -38,14 +51,15 @@ final class TaskDetailView: UIView {
         return view
     }()
     
-    private(set) lazy var deleteTaskButton: UIButton = {
-        let button = UIButton()
+    private lazy var deleteTaskButton: UIButton = {
+        let button = UIButton(primaryAction: deleteAction)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = .systemRed
         button.titleLabel?.font = .boldSystemFont(ofSize: 17)
         button.layer.cornerRadius = Sizes.blurViewCornerRadius
         button.heightAnchor.constraint(equalToConstant: 44).isActive = true
         button.setTitle("Удалить", for: .normal)
+        button.setTitleColor(UIColor(named: "textColor"), for: .normal)
         return button
     }()
     
@@ -57,22 +71,24 @@ final class TaskDetailView: UIView {
         return title
     }()
     
-    private(set) lazy var dismissButton: UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(systemName: "xmark"), for: .normal)
-        button.tintColor = UIColor(named: "backgroundColor")
+    private lazy var dismissButton: UIButton = {
+        let button = UIButton(primaryAction: dismissAction)
+        button.setImage(UIImage(systemName: "chevron.compact.down"), for: .normal)
+        button.tintColor = UIColor(named: "textColor")
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
     private lazy var titleAndCrossButtonStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [
-            taskTitle,
-            dismissButton
+            dismissButton,
+            taskTitle
         ])
-        stack.axis = .horizontal
+        stack.axis = .vertical
+        stack.alignment = .center
+        stack.distribution = .fill
         stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.spacing = 10
+        stack.spacing = 30
         return stack
     }()
     
@@ -81,7 +97,7 @@ final class TaskDetailView: UIView {
         let title = UILabel()
         title.font = .systemFont(ofSize: 17)
         title.textColor = .secondaryLabel
-        title.text = "Created"
+        title.text = "Создано"
         title.translatesAutoresizingMaskIntoConstraints = false
         return title
     }()
@@ -107,7 +123,7 @@ final class TaskDetailView: UIView {
         let title = UILabel()
         title.font = .systemFont(ofSize: 17)
         title.textColor = .secondaryLabel
-        title.text = "Completed"
+        title.text = "Выполнено"
         title.translatesAutoresizingMaskIntoConstraints = false
         return title
     }()
@@ -188,22 +204,38 @@ final class TaskDetailView: UIView {
         let stack = UIStackView(arrangedSubviews: [
             titleAndCrossButtonStackView,
             taskDateStackView,
-            deleteTaskButton
         ])
         stack.axis = .vertical
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.alignment = .fill
+        stack.distribution = .fill
         stack.spacing = 25
         return stack
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setup()
+    private lazy var dismissAction = UIAction { [weak self] _ in
+        self?.onDismissButtonTapped?()
+        
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.impactOccurred()
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    private lazy var deleteAction = UIAction { [weak self] _ in
+        self?.onDeleteButtonTapped?()
+        
+        let generator = UIImpactFeedbackGenerator(style: .heavy)
+        generator.impactOccurred()
+    }
+    
+    private lazy var downSwipeGestureRecognizer: UISwipeGestureRecognizer = {
+        let swipeRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(downSwipeAction))
+        swipeRecognizer.direction = .down
+        swipeRecognizer.delegate = self
+        return swipeRecognizer
+    }()
+    
+    @objc func downSwipeAction() {
+        self.onDownSwipe?()
     }
     
     func setupWithTask(_ task: TaskEntity) {
@@ -212,24 +244,27 @@ final class TaskDetailView: UIView {
         dayOfCreatingLabel.text = dayAndMonthDateFormatter.string(from: task.date ?? Date.now)
         timeOfCreatingLabel.text = timeFormatter.string(from: task.date ?? Date.now)
         
-//        dayOfFinishingLabel.text = dayAndMonthDateFormatter.string(from: todo.finishedAt!)
-//        timeOfFinishingLabel.text = timeFormatter.string(from: todo.finishedAt!)
-        
-//        timeOfDoingTask.text = distanceCompanentsFormatter.string(from: todo.createdAt.distance(to: todo.finishedAt!))
+        if let finishedAt = task.finishedAt {
+            dayOfFinishingLabel.text = dayAndMonthDateFormatter.string(from: finishedAt)
+            timeOfFinishingLabel.text = timeFormatter.string(from: finishedAt)
+            timeOfDoingTask.text = distanceCompanentsFormatter.string(from: task.date ?? Date.now,
+                                                                      to: finishedAt)
+        }
     }
 }
 
 private extension TaskDetailView {
     
-    func setup() {
-        
+    func setupUI() {
         setupSubviews()
         setupConstraints()
     }
     
     func setupSubviews() {
+        addGestureRecognizer(downSwipeGestureRecognizer)
         addSubview(bgView)
         bgView.addSubview(dateStackView)
+        bgView.addSubview(deleteTaskButton)
         bgView.addSubview(timeOfDoingTask)
         bgView.addSubview(firstSeparator)
         bgView.addSubview(secondSeparator)
@@ -237,27 +272,31 @@ private extension TaskDetailView {
     
     func setupConstraints() {
         NSLayoutConstraint.activate([
-            bgView.topAnchor.constraint(equalTo: self.topAnchor, constant: 5),
-            bgView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 5),
-            bgView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -5),
-            bgView.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -5),
+            bgView.topAnchor.constraint(equalTo: self.topAnchor),
+            bgView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            bgView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            bgView.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor),
         ])
         
         NSLayoutConstraint.activate([
             dateStackView.topAnchor.constraint(equalTo: bgView.topAnchor, constant: 25),
             dateStackView.leadingAnchor.constraint(equalTo: bgView.leadingAnchor, constant: 25),
-            dateStackView.trailingAnchor.constraint(equalTo: bgView.trailingAnchor, constant: -25)
+            dateStackView.trailingAnchor.constraint(equalTo: bgView.trailingAnchor, constant: -25),
+            deleteTaskButton.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -25),
+            deleteTaskButton.leadingAnchor.constraint(equalTo: bgView.leadingAnchor, constant: 25),
+            deleteTaskButton.trailingAnchor.constraint(equalTo: bgView.trailingAnchor, constant: -25),
+            
         ])
         
         NSLayoutConstraint.activate([
-            timeOfDoingTask.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            timeOfDoingTask.centerXAnchor.constraint(equalTo: taskDateStackView.centerXAnchor),
             timeOfDoingTask.centerYAnchor.constraint(equalTo: taskDateStackView.centerYAnchor),
             
-            firstSeparator.leadingAnchor.constraint(equalTo: dayOfCreatingLabel.trailingAnchor, constant: 10),
+            firstSeparator.leadingAnchor.constraint(equalTo: createdAtDataStackView.trailingAnchor, constant: 10),
             firstSeparator.trailingAnchor.constraint(equalTo: timeOfDoingTask.leadingAnchor, constant: -10),
             firstSeparator.centerYAnchor.constraint(equalTo: taskDateStackView.centerYAnchor),
             
-            secondSeparator.trailingAnchor.constraint(equalTo: dayOfFinishingLabel.leadingAnchor, constant: -10),
+            secondSeparator.trailingAnchor.constraint(equalTo: finishedAtDataStackView.leadingAnchor, constant: -10),
             secondSeparator.leadingAnchor.constraint(equalTo: timeOfDoingTask.trailingAnchor, constant: 10),
             secondSeparator.centerYAnchor.constraint(equalTo: taskDateStackView.centerYAnchor),
         ])
@@ -269,6 +308,12 @@ private extension TaskDetailView {
         view.backgroundColor = .systemGray4
         view.heightAnchor.constraint(equalToConstant: 1).isActive = true
         return view
+    }
+}
+
+extension TaskDetailView: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
 }
 

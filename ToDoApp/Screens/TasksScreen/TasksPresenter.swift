@@ -19,6 +19,7 @@ protocol TasksPresenterInput: AnyObject {
     func deleteTask(task: TaskEntity)
     func shareTask(task: TaskEntity, view: UIView)
     func searchTask(searchText: String)
+    func showTaskDetail(for task: TaskEntity, animate: Bool)
     func getCountOfEntities() -> Int
 }
 ///То, что он выводит, то, как он общается в viewController
@@ -42,6 +43,9 @@ final class TasksPresenter: TasksPresenterInput {
     }
     
     func updateCheckmarkState(with task: TaskEntity, isCompleted: Bool) {
+        var updatedTask = task
+        updatedTask.completed = isCompleted
+        updatedTask.finishedAt = isCompleted ? Date.now : nil 
         DebounceSaveManager.shared.scheduleSaveCompletedState(for: task, isCompleted: isCompleted) { [weak self] tasksToSave in
             self?.interactor.updateCheckmarkState(with: tasksToSave)
         }
@@ -80,6 +84,10 @@ final class TasksPresenter: TasksPresenterInput {
         }
         
         router.presentActivityVC(activityVC: activityVC, animated: true)
+    }
+    
+    func showTaskDetail(for task: TaskEntity, animate: Bool) {
+        router.showTaskDetail(for: task, animate: animate)
     }
     
     func searchTask(searchText: String) {
