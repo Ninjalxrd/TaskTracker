@@ -8,10 +8,8 @@
 import Foundation
 import UIKit
 
-///Те методы, которые реализуются внутри этого класса и должны быть доступны снаружи(другие классы вызывают методы, обращаясь к экземпляру
-///класса (протокола)protocol TasksPresenterInput: AnyObject {
+    // MARK: - Protocols
 protocol TasksPresenterInput: AnyObject {
-    func updateDataSource(with tasks: [TaskEntity])
     func fetchTasks()
     func updateCheckmarkState(with task: TaskEntity, isCompleted: Bool)
     func didSelectTask(task: TaskEntity)
@@ -22,13 +20,15 @@ protocol TasksPresenterInput: AnyObject {
     func showTaskDetail(for task: TaskEntity, animate: Bool)
     func getCountOfEntities() -> Int
 }
-///То, что он выводит, то, как он общается в viewController
-///Т.е здесь находятся методы, которые находятся в других классах, внутри которых вызывается наш класс
+
 protocol TasksPresenterOutput: AnyObject {
     func configureDataSource()
     func updateDataSource(with tasks: [TaskEntity])
+    func setupCountOfTasks()
+    func setupSearchBar()
 }
 
+// MARK: - TasksPresenterInput Implementation
 final class TasksPresenter: TasksPresenterInput {
     weak var viewController: TasksPresenterOutput!
     var interactor: TasksInteractorInput!
@@ -45,12 +45,13 @@ final class TasksPresenter: TasksPresenterInput {
     func updateCheckmarkState(with task: TaskEntity, isCompleted: Bool) {
         var updatedTask = task
         updatedTask.completed = isCompleted
-        updatedTask.finishedAt = isCompleted ? Date.now : nil 
+        updatedTask.finishedAt = isCompleted ? Date.now : nil
         DebounceSaveManager.shared.scheduleSaveCompletedState(for: task, isCompleted: isCompleted) { [weak self] tasksToSave in
             self?.interactor.updateCheckmarkState(with: tasksToSave)
         }
     }
     
+    // MARK: - Task Selection and Navigation
     func didSelectTask(task: TaskEntity) {
         router.showTaskEditScreen(task: task, animated: true)
     }
@@ -66,12 +67,10 @@ final class TasksPresenter: TasksPresenterInput {
     func shareTask(task: TaskEntity, view: UIView) {
         let text = "Задача: \(task.title ?? "")\nОписание: \(task.description ?? "")"
         let dateString = DateFormatterHelper.formattedRecievedDate(date: task.date ?? Date())
-        
         let items: [String] = [
             text,
             "Заметка создана: \(dateString)"
         ]
-        
         let activityVC = UIActivityViewController(activityItems: items,
                                                   applicationActivities: nil)
         
@@ -99,6 +98,7 @@ final class TasksPresenter: TasksPresenterInput {
     }
 }
 
+// MARK: - TasksInteractorOutput Implementation
 extension TasksPresenter: TasksInteractorOutput {
     
     func didObtainTasks(_ tasks: [TaskEntity]) {
@@ -106,8 +106,7 @@ extension TasksPresenter: TasksInteractorOutput {
     }
     
     func didObtainFailure(_ error: any Error) {
-        print("failure with obtain from network \(error)")
+        print("Failure with obtain from network: \(error)")
     }
-    
 }
- 
+

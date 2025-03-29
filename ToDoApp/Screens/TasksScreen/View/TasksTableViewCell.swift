@@ -9,6 +9,7 @@ import UIKit
 
 final class TasksTableViewCell: UITableViewCell {
     
+    // MARK: - Properties
     var isCompleted: Bool = false {
         didSet {
             updateCheckmarkUI()
@@ -19,6 +20,7 @@ final class TasksTableViewCell: UITableViewCell {
     var onEditAction: (() -> Void)?
     var onShareAction: (() -> Void)?
     
+    // MARK: - Initializers
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
@@ -29,6 +31,7 @@ final class TasksTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Lifecycle
     override func layoutSubviews() {
         super.layoutSubviews()
         checkmarkButton.layer.cornerRadius = checkmarkButton.frame.width / 2
@@ -42,10 +45,11 @@ final class TasksTableViewCell: UITableViewCell {
         taskTitleLabel.text = nil
         taskDescriptionLabel.text = nil
     }
-
+    
+    // MARK: - UI Update Methods
     private func updateCheckmarkUI() {
         UIView.animate(withDuration: 0.3) { [weak self] in
-            guard let self else { return }
+            guard let self = self else { return }
             if self.isCompleted {
                 self.checkmarkButton.layer.borderColor = Color.yellowCg
                 self.checkmarkButton.setImage(UIImage(named: "tick"), for: .normal)
@@ -55,7 +59,8 @@ final class TasksTableViewCell: UITableViewCell {
             }
         }
     }
-
+    
+    // MARK: - UI Elements
     lazy var checkmarkButton: UIButton = {
         let button = UIButton(primaryAction: onCheckmarkTappedAction)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -66,13 +71,12 @@ final class TasksTableViewCell: UITableViewCell {
     }()
     
     private lazy var onCheckmarkTappedAction = UIAction { [weak self] _ in
-        guard let self else { return }
-        isCompleted.toggle()
+        guard let self = self else { return }
+        self.isCompleted.toggle()
         DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            self.updateCheckmarkUI()
+            self?.updateCheckmarkUI()
         }
-        self.onUpdateCheckmarkButton?(isCompleted)
+        self.onUpdateCheckmarkButton?(self.isCompleted)
         let generator = UIImpactFeedbackGenerator(style: .medium)
         generator.impactOccurred()
     }
@@ -116,6 +120,7 @@ final class TasksTableViewCell: UITableViewCell {
         return stackView
     }()
     
+    // MARK: - Setup Methods
     private func setupInteractionMenu() {
         let interaction = UIContextMenuInteraction(delegate: self)
         self.addInteraction(interaction)
@@ -138,6 +143,7 @@ final class TasksTableViewCell: UITableViewCell {
         ])
     }
     
+    // MARK: - Configuration
     func configureCell(with task: TaskEntity) {
         isCompleted = task.completed
         taskTitleLabel.text = task.title
@@ -163,8 +169,9 @@ final class TasksTableViewCell: UITableViewCell {
             taskDescriptionLabel.textColor = UIColor(named: "textColor")
         }
     }
-
 }
+
+//MARK: - Extensions
 
 extension TasksTableViewCell: UIContextMenuInteractionDelegate {
     
@@ -177,13 +184,13 @@ extension TasksTableViewCell: UIContextMenuInteractionDelegate {
                 }
             let share = UIAction(
                 title: "Поделиться",
-                image: UIImage(systemName: "square.and.arrow.up")) {[weak self] _ in
+                image: UIImage(systemName: "square.and.arrow.up")) { [weak self] _ in
                     self?.onShareAction?()
                 }
             let delete = UIAction(
                 title: "Удалить",
                 image: UIImage(systemName: "trash"),
-                attributes: .destructive) {[weak self] _ in
+                attributes: .destructive) { [weak self] _ in
                     self?.onDeleteAction?()
                 }
             return UIMenu(title: "", children: [edit, share, delete])

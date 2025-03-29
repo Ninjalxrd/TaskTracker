@@ -7,11 +7,15 @@
 
 import UIKit
 
-final class CreateEditTaskViewController: UIViewController, CreatePresenterOutput {
+final class CreateEditTaskViewController: UIViewController {
 
+    // MARK: - Properties
+    
     private let createView: CreateView = .init()
     private let saveOverlay: CompactSaveOverlay = CompactSaveOverlay()
     var createPresenter: CreatePresenterInput!
+    
+    // MARK: - Lifecycle
     
     override func loadView() {
         super.loadView()
@@ -40,18 +44,20 @@ final class CreateEditTaskViewController: UIViewController, CreatePresenterOutpu
         saveTaskData()
     }
     
-    func saveTaskData() {
+    // MARK: - Private Methods
+    
+    private func saveTaskData() {
         guard let text = createView.textView.text, text != "" else { return }
         let (title, description) = createView.separateTitleWithDescription(from: text)
 
-            let newTask = TaskEntity(
-                localId: UUID(),
-                serverId: nil,
-                title: title,
-                description: description,
-                date: Date.now,
-                completed: false
-            )
+        let newTask = TaskEntity(
+            localId: UUID(),
+            serverId: nil,
+            title: title,
+            description: description,
+            date: Date.now,
+            completed: false
+        )
         
         createPresenter.saveNewTask(with: newTask)
         saveOverlay.show(in: createView, with: 1.5)
@@ -69,15 +75,14 @@ final class CreateEditTaskViewController: UIViewController, CreatePresenterOutpu
         }
     }
     
-    
     private func setupNavigationBar() {
-        let appearence = UINavigationBarAppearance()
-        appearence.titleTextAttributes = [.foregroundColor: Color.yellow ?? UIColor.yellow]
-        appearence.largeTitleTextAttributes = [.foregroundColor: Color.yellow ?? UIColor.yellow]
+        let appearance = UINavigationBarAppearance()
+        appearance.titleTextAttributes = [.foregroundColor: Color.yellow ?? UIColor.yellow]
+        appearance.largeTitleTextAttributes = [.foregroundColor: Color.yellow ?? UIColor.yellow]
         
         navigationController?.navigationBar.tintColor = Color.yellow
-        navigationController?.navigationBar.standardAppearance = appearence
-        navigationController?.navigationBar.compactAppearance = appearence
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.compactAppearance = appearance
 
         let doneButton = UIBarButtonItem(customView: createView.doneButton)
         navigationItem.rightBarButtonItem = doneButton

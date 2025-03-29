@@ -27,7 +27,9 @@ final class DebounceSaveManager {
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: debounceSaveStateInterval, repeats: false) { [weak self] _ in
             guard let self else { return }
-            saveHandler(self.tasks)
+            DispatchQueue.main.async {
+                saveHandler(self.tasks)
+            }
             self.tasks.removeAll()
         }
     }
@@ -35,7 +37,9 @@ final class DebounceSaveManager {
     func scheduleSaveTask(saveHandler: @escaping () -> Void) {
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: debounceSaveTaskInterval, repeats: false) { _ in
-            saveHandler()
+            DispatchQueue.main.async {
+                saveHandler()
+            }
         }
     }
 

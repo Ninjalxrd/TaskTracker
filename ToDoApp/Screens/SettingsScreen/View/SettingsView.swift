@@ -9,6 +9,8 @@ import UIKit
 
 class SettingsView: UIView {
     
+    // MARK: - Initialize
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -18,6 +20,8 @@ class SettingsView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - TableView
+    
     lazy var settingsTableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -25,8 +29,11 @@ class SettingsView: UIView {
         tableView.register(ThemeTableViewCell.self, forCellReuseIdentifier: ThemeTableViewCell.identifier)
         tableView.separatorColor = .clear
         tableView.backgroundColor = UIColor(named: "backgroundColor")
+        tableView.allowsSelection = false
         return tableView
     }()
+    
+    // MARK: - Setup UI
     
     private func setupUI() {
         addSubview(settingsTableView)
@@ -39,6 +46,9 @@ class SettingsView: UIView {
         ])
     }
 }
+
+// MARK: - TableViewDelegate
+
 
 extension SettingsView: UITableViewDelegate {
     
@@ -59,10 +69,10 @@ extension SettingsView: UITableViewDelegate {
             
             headerView.addSubview(titleLabel)
             NSLayoutConstraint.activate([
-                titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
-                titleLabel.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -16),
-                titleLabel.topAnchor.constraint(equalTo: headerView.topAnchor, constant: 8),
-                titleLabel.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -8)
+                titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: Constants.settingsViewConstant),
+                titleLabel.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -Constants.settingsViewConstant),
+                titleLabel.topAnchor.constraint(equalTo: headerView.topAnchor, constant: Constants.settingsViewSmallConstant),
+                titleLabel.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -Constants.settingsViewSmallConstant)
             ])
             
             return headerView

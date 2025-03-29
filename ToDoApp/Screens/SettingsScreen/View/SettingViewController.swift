@@ -7,11 +7,13 @@
 
 import UIKit
 
-final class SettingsViewController: UIViewController, SettingsPresenterOutput {
+final class SettingsViewController: UIViewController {
 
+    // MARK: - Properties
     private let settingView: SettingsView = .init()
     var presenter: SettingsPresenterInput!
 
+    // MARK: - Lifecycle
     override func loadView() {
         super.loadView()
         view = settingView
@@ -22,21 +24,28 @@ final class SettingsViewController: UIViewController, SettingsPresenterOutput {
         settingView.settingsTableView.dataSource = self
     }
     
+    // MARK: - Setup Callbacks
+
     func setupCallbacks(for cell: ThemeTableViewCell) {
         cell.setSystemTheme = { [weak self] in
             guard let self else { return }
-            self.presenter.setupSystemTheme(view: self.view)
+            ThemeUserDefaults.shared.theme = Theme(rawValue: 0) ?? .dark
+            self.presenter.setupViewTheme(self.view)
         }
         cell.setLightTheme = { [weak self] in
             guard let self else { return }
-            self.presenter.setupLightTheme(view: self.view)
+            ThemeUserDefaults.shared.theme = Theme(rawValue: 1) ?? .dark
+            self.presenter.setupViewTheme(self.view)
         }
         cell.setDarkTheme = { [weak self] in
             guard let self else { return }
-            self.presenter.setupDarkTheme(view: self.view)
+            ThemeUserDefaults.shared.theme = Theme(rawValue: 2) ?? .dark
+            self.presenter.setupViewTheme(self.view)
         }
     }
 }
+
+// MARK: - UITableViewDataSource
 
 extension SettingsViewController: UITableViewDataSource {
     
@@ -49,8 +58,4 @@ extension SettingsViewController: UITableViewDataSource {
         setupCallbacks(for: cell)
         return cell
     }
-    
-//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//        <#code#>
-//    }
 }

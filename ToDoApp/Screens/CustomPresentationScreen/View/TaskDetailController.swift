@@ -7,29 +7,38 @@
 
 import UIKit
 
+// MARK: - TaskDetailControllerInput Protocol
 protocol TaskDetailControllerInput {
     func setupWithTask(_ task: TaskEntity)
-    func setupModalStyle(_ presentationStyle : UIModalPresentationStyle, _ transitionStyle: UIModalTransitionStyle)
+    
+    func setupModalStyle(_ presentationStyle: UIModalPresentationStyle,
+                         _ transitionStyle: UIModalTransitionStyle)
 }
 
+// MARK: - TaskDetailController
 final class TaskDetailController: UIViewController, TaskDetailControllerInput {
     
+    // MARK: - Properties
     var presenter: TasksPresenterInput!
     var currentTask: TaskEntity?
+    
     private var taskDetailView: TaskDetailView {
         view as! TaskDetailView
     }
     
+    // MARK: - Lifecycle
     override func loadView() {
         view = TaskDetailView()
     }
     
     override func viewDidLoad() {
+        super.viewDidLoad()
         transitioningDelegate = self
         setupCallbacks()
     }
     
-    func setupCallbacks() {
+    // MARK: - Setup Methods
+    private func setupCallbacks() {
         taskDetailView.onDismissButtonTapped = { [weak self] in
             self?.dismiss(animated: true)
         }
@@ -39,12 +48,13 @@ final class TaskDetailController: UIViewController, TaskDetailControllerInput {
         }
         
         taskDetailView.onDeleteButtonTapped = { [weak self] in
-            guard let self else { return }
-            presenter.deleteTask(task: self.currentTask!)
+            guard let self, let task = self.currentTask else { return }
+            presenter.deleteTask(task: task)
             self.dismiss(animated: true)
         }
     }
     
+    // MARK: - TaskDetailControllerInput
     func setupModalStyle(_ presentationStyle: UIModalPresentationStyle,
                          _ transitionStyle: UIModalTransitionStyle) {
         self.modalTransitionStyle = transitionStyle
@@ -57,10 +67,11 @@ final class TaskDetailController: UIViewController, TaskDetailControllerInput {
     }
 }
 
-// MARK: Conforming UIViewControllerTransitioningDelegate protocol
+// MARK: - UIViewControllerTransitioningDelegate
 extension TaskDetailController: UIViewControllerTransitioningDelegate {
-    
-    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+    func presentationController(forPresented presented: UIViewController,
+                                presenting: UIViewController?,
+                                source: UIViewController) -> UIPresentationController? {
         return CustomHeightPresentationController(presentedViewController: presented, presenting: presenting)
     }
 }

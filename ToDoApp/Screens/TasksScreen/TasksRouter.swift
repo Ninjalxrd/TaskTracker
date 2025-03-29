@@ -8,6 +8,8 @@
 import Foundation
 import UIKit
 
+    //MARK: - Protocol
+
 protocol TasksRouterProtocol: AnyObject {
     func showTaskEditScreen(task: TaskEntity, animated: Bool)
     func presentActivityVC(activityVC: UIActivityViewController, animated: Bool)
@@ -16,9 +18,11 @@ protocol TasksRouterProtocol: AnyObject {
 
 final class TasksRouter: TasksRouterProtocol {
     
+    // MARK: - Properties
     weak var view: UIViewController!
     var detailVC: TaskDetailControllerInput!
     
+    // MARK: - Navigation Methods
     func showTaskEditScreen(task: TaskEntity, animated: Bool) {
         let editTaskVC = EditTaskAssembly.buildScreen(task: task)
         view.navigationController?.pushViewController(editTaskVC, animated: animated)
@@ -31,6 +35,9 @@ final class TasksRouter: TasksRouterProtocol {
     func showTaskDetail(for task: TaskEntity, animate: Bool) {
         detailVC.setupWithTask(task)
         detailVC.setupModalStyle(.custom, .coverVertical)
-        view.present(detailVC as! UIViewController, animated: true)
+        if let detailViewController = detailVC as? UIViewController {
+            view.present(detailViewController, animated: animate)
+        }
     }
 }
+

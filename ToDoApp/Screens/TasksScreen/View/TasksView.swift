@@ -4,19 +4,24 @@
 //
 //  Created by Павел on 18.03.2025.
 //
+// MARK: - TasksView
 
 import UIKit
 
 final class TasksView: UIView {
     
+    // MARK: - Callbacks
     var onCellSelected: ((IndexPath) -> Void)?
     var textDidChange: ((String) -> Void)?
+    
+    // MARK: - Properties
     var countOfTasks = 0 {
         didSet {
             updateTableViewFooter()
         }
     }
     
+    // MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -26,6 +31,7 @@ final class TasksView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - UI Elements
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -51,26 +57,25 @@ final class TasksView: UIView {
         searchTextField.layer.cornerRadius = Sizes.searchBarCornerRadius
         searchTextField.layer.masksToBounds = true
         searchTextField.font = .systemFont(ofSize: Sizes.searchBarTextFieldTextSize, weight: .medium)
-
+        
         let placeholderAttributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: Sizes.searchBarTextFieldTextSize),
             .foregroundColor: Color.lightGray ?? .systemGray5
         ]
         searchTextField.attributedPlaceholder = NSAttributedString(string: "Поиск", attributes: placeholderAttributes)
         addCancelButtonToKeyboard(textField: searchTextField)
-
+        
         return search
     }()
     
-    func addCancelButtonToKeyboard(textField: UITextField) {
+    // MARK: - UI Setup Methods
+    private func addCancelButtonToKeyboard(textField: UITextField) {
         let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: Sizes.toolbarHeight))
         toolBar.backgroundColor = UIColor(named: "otherColor")
         let cancelButton = UIBarButtonItem(
             image: UIImage(systemName: "keyboard.chevron.compact.down"),
             primaryAction: cancelAction)
-        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace,
-                                            target: nil,
-                                            action: nil)
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         toolBar.tintColor = Color.yellow
         toolBar.items = [flexibleSpace, cancelButton]
         textField.inputAccessoryView = toolBar
@@ -86,7 +91,7 @@ final class TasksView: UIView {
         let stackView = UIStackView(arrangedSubviews: [titleLabel, searchBar])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
-        stackView.spacing = 5
+        stackView.spacing = Constants.small
         stackView.alignment = .fill
         stackView.distribution = .fill
         return stackView
@@ -102,6 +107,7 @@ final class TasksView: UIView {
         return tableView
     }()
     
+    // MARK: - Footer View
     private func createFooterView(countOfTasks: Int) -> UIView {
         let footer = UIView(frame: CGRect(x: 0, y: 0, width: tasksTableView.bounds.width, height: Sizes.footerHeight))
         footer.backgroundColor = UIColor(named: "backgroundColor")
@@ -126,6 +132,7 @@ final class TasksView: UIView {
         tasksTableView.tableFooterView = footerView
     }
     
+    // MARK: - Activity Indicator
     lazy var activityIndicator: CustomActivityIndicator = {
         let indicator = CustomActivityIndicator()
         indicator.translatesAutoresizingMaskIntoConstraints = false
@@ -133,6 +140,7 @@ final class TasksView: UIView {
         return indicator
     }()
     
+    // MARK: - Setup UI
     private func setupUI() {
         addSubview(topStackView)
         addSubview(tasksTableView)
@@ -152,8 +160,9 @@ final class TasksView: UIView {
             activityIndicator.centerYAnchor.constraint(equalTo: tasksTableView.centerYAnchor),
         ])
     }
-    
 }
+
+// MARK: - Extensions with delegates
 
 extension TasksView: UITableViewDelegate {
     
@@ -172,5 +181,4 @@ extension TasksView: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         textDidChange?(searchText)
     }
-    
 }

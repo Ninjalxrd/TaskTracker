@@ -9,12 +9,13 @@ import UIKit
 
 final class ThemeTableViewCell: UITableViewCell {
     
+    // MARK: - Callbacks
+    
     var setSystemTheme: (() -> Void)?
     var setLightTheme: (() -> Void)?
     var setDarkTheme: (() -> Void)?
     
     private var selectedTheme: UIButton?
-
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -48,6 +49,8 @@ final class ThemeTableViewCell: UITableViewCell {
         self.setDarkTheme?()
         self.updateSelection(self.darkThemeButton)
     }
+    
+    // MARK: - Private Methods
 
     private func createThemeButton(title: String, subtitle: String?, image: UIImage?, action: UIAction) -> UIButton {
         var config = UIButton.Configuration.filled()
@@ -58,7 +61,7 @@ final class ThemeTableViewCell: UITableViewCell {
         config.subtitle = subtitle
         config.image = image
         config.imagePlacement = .top
-        config.imagePadding = 8
+        config.imagePadding = Constants.themeButtonImageSpacing
         
         let button = UIButton(configuration: config)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -66,6 +69,8 @@ final class ThemeTableViewCell: UITableViewCell {
         button.clipsToBounds = true
         return button
     }
+    
+    // MARK: - Buttons
     
     private lazy var systemThemeButton: UIButton = createThemeButton(
         title: "Системная",
@@ -89,7 +94,7 @@ final class ThemeTableViewCell: UITableViewCell {
         let stack = UIStackView(arrangedSubviews: [systemThemeButton, lightThemeButton, darkThemeButton])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
-        stack.spacing = 4
+        stack.spacing = Constants.themeButtonStackSpacing
         stack.distribution = .fillEqually
         stack.alignment = .fill
         return stack
@@ -108,6 +113,8 @@ final class ThemeTableViewCell: UITableViewCell {
             updateSelection(darkThemeButton)
         }
     }
+    
+    // MARK: - Setup UI
     
     private func setupUI() {
         

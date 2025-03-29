@@ -7,19 +7,25 @@
 
 import Foundation
 
+// MARK: - Protocols
+
 protocol EditTaskInteractorInput {
     func obtainTaskData(for taskId: UUID)
     func updateTaskData(with task: TaskEntity)
 }
 
-protocol EditTaskInteractorOutput {
+protocol EditTaskInteractorOutput: AnyObject {
     func didObtainTask(_ task: TaskEntity)
 }
+
+// MARK: - EditTaskInteractor
 
 final class EditTaskInteractor: EditTaskInteractorInput {
     
     var coreDataManager: CoreDataManagerInput!
-    var presenter: EditTaskInteractorOutput!
+    weak var presenter: EditTaskInteractorOutput!
+    
+    // MARK: - EditTaskInteractorInput
     
     func obtainTaskData(for taskId: UUID) {
         

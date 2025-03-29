@@ -8,6 +8,7 @@
 import Foundation
 
 struct ThemeUserDefaults {
+    
     static var shared = ThemeUserDefaults()
     var theme: Theme {
         get {

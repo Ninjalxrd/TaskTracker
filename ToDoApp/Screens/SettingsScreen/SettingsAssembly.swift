@@ -19,8 +19,6 @@ final class SettingsAssembly {
         
         return view
     }
-   
-
     
     private init() {}
 }

@@ -7,6 +7,7 @@
 
 import UIKit
 
+    //MARK: - Assembly Create Screen
 final class CreateTaskAssembly {
     
     static func buildScreen() -> UIViewController {
@@ -19,7 +20,6 @@ final class CreateTaskAssembly {
 
         view.createPresenter = presenter
         presenter.interactor = interactor
-        presenter.viewController = view
         presenter.router = router
         interactor.coreDataManager = coreDataManager
 

@@ -6,32 +6,20 @@
 //
 import UIKit
 
+    // MARK: - Protocol
+
 protocol SettingsPresenterInput {
-    func setupSystemTheme(view: UIView)
-    func setupLightTheme(view: UIView)
-    func setupDarkTheme(view: UIView)
+    func setupViewTheme(_ view: UIView)
 }
 
-protocol SettingsPresenterOutput {
-    func setupCallbacks(for cell: ThemeTableViewCell)
-}
-
-
-final class SettingsPresenter: SettingsPresenterInput, SettingsInteractorOutput {
+final class SettingsPresenter: SettingsPresenterInput {
+    
+    // MARK: - Dependencies
     
     var interactor: SettingsInteractorInput!
     
-    func setupSystemTheme(view: UIView) {
-        interactor.setupSystemTheme(view: view)
+    func setupViewTheme(_ view: UIView) {
+        interactor.setupViewTheme(view: view)
     }
-    
-    func setupLightTheme(view: UIView) {
-        interactor.setupLightTheme(view: view)
-    }
-    
-    func setupDarkTheme(view: UIView) {
-        interactor.setupDarkTheme(view: view)
-    }
-    
     
 }

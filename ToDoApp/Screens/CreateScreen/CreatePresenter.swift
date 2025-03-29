@@ -4,25 +4,25 @@
 //
 //  Created by Павел on 27.03.2025.
 //
+
 import Foundation
 import UIKit
 
+    // MARK: - Protocol
 protocol CreatePresenterInput {
     func saveNewTask(with task: TaskEntity)
     func showAlert(title: String, message: String)
 }
 
-protocol CreatePresenterOutput {
-    func saveTaskData()
-
-}
-
+    // MARK: - CreatePresenter (Presenter)
 final class CreatePresenter: CreatePresenterInput {
     
-    var viewController: CreatePresenterOutput!
+    // MARK: - Dependencies
+    
     var interactor: CreateTaskInteractorInput!
     var router: CreateEditTaskRouterProtocol!
         
+    // MARK: - Methods
     func saveNewTask(with task: TaskEntity) {
         interactor.saveTaskData(with: task)
     }

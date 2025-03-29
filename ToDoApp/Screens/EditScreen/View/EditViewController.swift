@@ -7,13 +7,16 @@
 
 import UIKit
 
+// MARK: - EditViewController
 final class EditViewController: UIViewController, EditTaskPresenterOutput {
 
+    // MARK: - Properties
     private let editView: EditView = .init()
     private let saveOverlay: CompactSaveOverlay = CompactSaveOverlay()
     private var currentTask: TaskEntity?
     var editPresenter: EditTaskPresenterInput!
     
+    // MARK: - Initializers
     init(currentTask: TaskEntity?) {
         self.currentTask = currentTask
         super.init(nibName: nil, bundle: nil)
@@ -23,6 +26,7 @@ final class EditViewController: UIViewController, EditTaskPresenterOutput {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Lifecycle
     override func loadView() {
         super.loadView()
         view = editView
@@ -41,12 +45,13 @@ final class EditViewController: UIViewController, EditTaskPresenterOutput {
         saveTaskData()
     }
     
+    // MARK: - Task Handling
+    
     func saveTaskData() {
-        guard let text = editView.textView.text, text != "" else { return }
+        guard let text = editView.textView.text, !text.isEmpty else { return }
         let (title, description) = editView.separateTitleWithDescription(from: text)
-        guard let existingTask = currentTask else {
-            return
-        }
+        guard let existingTask = currentTask else { return }
+        
         let updatedTask = TaskEntity(
             localId: existingTask.localId,
             serverId: existingTask.serverId,
@@ -55,40 +60,38 @@ final class EditViewController: UIViewController, EditTaskPresenterOutput {
             date: existingTask.date,
             completed: existingTask.completed
         )
+        
         currentTask = updatedTask
         editPresenter.updateTaskData(with: updatedTask)
         saveOverlay.show(in: editView, with: 1.5)
     }
     
-    private func setupNavigationBar() {
-        let appearence = UINavigationBarAppearance()
-        appearence.titleTextAttributes = [.foregroundColor: Color.yellow ?? UIColor.yellow]
-        appearence.largeTitleTextAttributes = [.foregroundColor: Color.yellow ?? UIColor.yellow]
-        
-        navigationController?.navigationBar.tintColor = Color.yellow
-        navigationController?.navigationBar.standardAppearance = appearence
-        navigationController?.navigationBar.compactAppearance = appearence
-
-        let doneButton = UIBarButtonItem(customView:
-                                            editView.doneButton)
-        navigationItem.rightBarButtonItem = doneButton
-    }
-    
     func fetchTaskData() {
         guard let task = currentTask else { return }
-        let taskId = task.localId
-        editPresenter.obtainTask(for: taskId)
+        editPresenter.obtainTask(for: task.localId)
     }
     
     func setupForEditing(task: TaskEntity) {
         editView.configureCell(with: task)
     }
+    
+    // MARK: - UI Setup
+    private func setupNavigationBar() {
+        let appearance = UINavigationBarAppearance()
+        appearance.titleTextAttributes = [.foregroundColor: Color.yellow ?? UIColor.yellow]
+        appearance.largeTitleTextAttributes = [.foregroundColor: Color.yellow ?? UIColor.yellow]
+        
+        navigationController?.navigationBar.tintColor = Color.yellow
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.compactAppearance = appearance
 
-    func setupCallback() {
+        let doneButton = UIBarButtonItem(customView: editView.doneButton)
+        navigationItem.rightBarButtonItem = doneButton
+    }
+    
+    private func setupCallback() {
         editView.onSave = { [weak self] in
-            guard let self else { return }
-            self.saveTaskData()
+            self?.saveTaskData()
         }
     }
 }
-

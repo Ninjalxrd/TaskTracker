@@ -7,23 +7,24 @@
 
 import Foundation
 
-protocol EditTaskPresenterInput {
+// MARK: - Protocols
+protocol EditTaskPresenterInput: AnyObject {
     func obtainTask(for taskId: UUID)
     func updateTaskData(with task: TaskEntity)
 }
 
-protocol EditTaskPresenterOutput {
+protocol EditTaskPresenterOutput: AnyObject {
     func setupForEditing(task: TaskEntity)
-    func fetchTaskData()
-    func saveTaskData()
-    func setupCallback()
 }
 
+// MARK: - EditTaskPresenterInput Implementation
 final class EditPresenter: EditTaskPresenterInput {
-
-    var viewController: EditTaskPresenterOutput!
+    
+    // MARK: - Properties
+    weak var viewController: EditTaskPresenterOutput?
     var interactor: EditTaskInteractorInput!
     
+    // MARK: - Fetching and Updating Tasks
     func obtainTask(for taskId: UUID) {
         interactor.obtainTaskData(for: taskId)
     }
@@ -31,16 +32,14 @@ final class EditPresenter: EditTaskPresenterInput {
     func updateTaskData(with task: TaskEntity) {
         interactor.updateTaskData(with: task)
     }
-    
 }
 
-//MARK: - Extensions
-
+// MARK: - EditTaskInteractorOutput Implementation
 extension EditPresenter: EditTaskInteractorOutput {
 
     func didObtainTask(_ task: TaskEntity) {
-        viewController.setupForEditing(task: task)
+        viewController?.setupForEditing(task: task)
     }
-    
 }
+
 

@@ -9,10 +9,13 @@ import UIKit
 
 final class TaskDetailView: UIView {
     
+    // MARK: - Callbacks
     var onDismissButtonTapped: (() -> Void)?
     var onDeleteButtonTapped: (() -> Void)?
     var onDownSwipe: (() -> Void)?
     
+    // MARK: - Init
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -21,6 +24,8 @@ final class TaskDetailView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    // MARK: - Private Properties
     
     private lazy var dayAndMonthDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -42,6 +47,8 @@ final class TaskDetailView: UIView {
         formatter.unitsStyle = .abbreviated
         return formatter
     }()
+    
+    // MARK: - UI Elements
     
     private lazy var bgView: UIView = {
         let view = UIView()
@@ -88,11 +95,11 @@ final class TaskDetailView: UIView {
         stack.alignment = .center
         stack.distribution = .fill
         stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.spacing = 30
+        stack.spacing = Constants.biggerThanBig
         return stack
     }()
     
-    // MARK: Info about begining task
+    // MARK: Info About Begining Task
     private lazy var beginedAtTitle: UILabel = {
         let title = UILabel()
         title.font = .systemFont(ofSize: 17)
@@ -118,7 +125,7 @@ final class TaskDetailView: UIView {
         return title
     }()
     
-    // MARK: Info about finishing task
+    // MARK: Info About Finishing Task
     private lazy var finishedAtTitle: UILabel = {
         let title = UILabel()
         title.font = .systemFont(ofSize: 17)
@@ -144,7 +151,7 @@ final class TaskDetailView: UIView {
         return title
     }()
     
-    // MARK: Time stacks
+    // MARK: Time Stacks
     private lazy var createdAtDataStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [
             beginedAtTitle,
@@ -153,7 +160,7 @@ final class TaskDetailView: UIView {
         ])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
-        stack.spacing = 5
+        stack.spacing = Constants.small
         stack.alignment = .leading
         return stack
     }()
@@ -209,7 +216,7 @@ final class TaskDetailView: UIView {
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.alignment = .fill
         stack.distribution = .fill
-        stack.spacing = 25
+        stack.spacing = Constants.big
         return stack
     }()
     
@@ -234,6 +241,8 @@ final class TaskDetailView: UIView {
         return swipeRecognizer
     }()
     
+    // MARK: - Public Methods
+
     @objc func downSwipeAction() {
         self.onDownSwipe?()
     }
@@ -255,6 +264,8 @@ final class TaskDetailView: UIView {
 
 private extension TaskDetailView {
     
+    // MARK: - Setup UI
+
     func setupUI() {
         setupSubviews()
         setupConstraints()
@@ -279,12 +290,12 @@ private extension TaskDetailView {
         ])
         
         NSLayoutConstraint.activate([
-            dateStackView.topAnchor.constraint(equalTo: bgView.topAnchor, constant: 25),
-            dateStackView.leadingAnchor.constraint(equalTo: bgView.leadingAnchor, constant: 25),
-            dateStackView.trailingAnchor.constraint(equalTo: bgView.trailingAnchor, constant: -25),
-            deleteTaskButton.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -25),
-            deleteTaskButton.leadingAnchor.constraint(equalTo: bgView.leadingAnchor, constant: 25),
-            deleteTaskButton.trailingAnchor.constraint(equalTo: bgView.trailingAnchor, constant: -25),
+            dateStackView.topAnchor.constraint(equalTo: bgView.topAnchor, constant: Constants.big),
+            dateStackView.leadingAnchor.constraint(equalTo: bgView.leadingAnchor, constant: Constants.big),
+            dateStackView.trailingAnchor.constraint(equalTo: bgView.trailingAnchor, constant: -Constants.big),
+            deleteTaskButton.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -Constants.big),
+            deleteTaskButton.leadingAnchor.constraint(equalTo: bgView.leadingAnchor, constant: Constants.big),
+            deleteTaskButton.trailingAnchor.constraint(equalTo: bgView.trailingAnchor, constant: -Constants.big),
             
         ])
         
@@ -292,12 +303,12 @@ private extension TaskDetailView {
             timeOfDoingTask.centerXAnchor.constraint(equalTo: taskDateStackView.centerXAnchor),
             timeOfDoingTask.centerYAnchor.constraint(equalTo: taskDateStackView.centerYAnchor),
             
-            firstSeparator.leadingAnchor.constraint(equalTo: createdAtDataStackView.trailingAnchor, constant: 10),
-            firstSeparator.trailingAnchor.constraint(equalTo: timeOfDoingTask.leadingAnchor, constant: -10),
+            firstSeparator.leadingAnchor.constraint(equalTo: createdAtDataStackView.trailingAnchor, constant: Constants.medium),
+            firstSeparator.trailingAnchor.constraint(equalTo: timeOfDoingTask.leadingAnchor, constant: -Constants.medium),
             firstSeparator.centerYAnchor.constraint(equalTo: taskDateStackView.centerYAnchor),
             
-            secondSeparator.trailingAnchor.constraint(equalTo: finishedAtDataStackView.leadingAnchor, constant: -10),
-            secondSeparator.leadingAnchor.constraint(equalTo: timeOfDoingTask.trailingAnchor, constant: 10),
+            secondSeparator.trailingAnchor.constraint(equalTo: finishedAtDataStackView.leadingAnchor, constant: -Constants.medium),
+            secondSeparator.leadingAnchor.constraint(equalTo: timeOfDoingTask.trailingAnchor, constant: Constants.medium),
             secondSeparator.centerYAnchor.constraint(equalTo: taskDateStackView.centerYAnchor),
         ])
     }
@@ -310,6 +321,8 @@ private extension TaskDetailView {
         return view
     }
 }
+
+// MARK: - UIGestureRecognizerDelegate
 
 extension TaskDetailView: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {

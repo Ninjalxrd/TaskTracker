@@ -9,8 +9,12 @@ import UIKit
 
 final class CreateView: UIView {
     
+    // MARK: - Properties
+    
     var onDoneButtonTapped: (() -> Void)?
-        
+    
+    // MARK: - Init
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -20,6 +24,8 @@ final class CreateView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    // MARK: - UI Elements
     
     private lazy var taskDateLabel: UILabel = {
         let label = UILabel()
@@ -38,31 +44,12 @@ final class CreateView: UIView {
         addCancelButtonToKeyboard(textView: text)
         return text
     }()
-
-    func addCancelButtonToKeyboard(textView: UITextView) {
-        let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: Sizes.toolbarHeight))
-        let cancelButton = UIBarButtonItem(
-            image: UIImage(systemName: "keyboard.chevron.compact.down"),
-            primaryAction: cancelAction)
-        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace,
-                                            target: nil,
-                                            action: nil)
-        toolBar.tintColor = Color.yellow
-        toolBar.items = [flexibleSpace, cancelButton]
-        textView.inputAccessoryView = toolBar
-    }
-    
-    private lazy var cancelAction = UIAction { [weak self] _ in
-        self?.endEditing(true)
-        let generator = UIImpactFeedbackGenerator(style: .medium)
-        generator.impactOccurred()
-    }
     
     private lazy var stackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [taskDateLabel, textView])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
-        stack.spacing = 5
+        stack.spacing = Constants.small
         stack.alignment = .fill
         stack.distribution = .fill
         return stack
@@ -77,12 +64,22 @@ final class CreateView: UIView {
         return button
     }()
     
+    // MARK: - Actions
+    
+    private lazy var cancelAction = UIAction { [weak self] _ in
+        self?.endEditing(true)
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.impactOccurred()
+    }
+    
     private lazy var doneActionButton = UIAction {[weak self] _ in
         self?.endEditing(true)
         self?.onDoneButtonTapped?()
         let generator = UIImpactFeedbackGenerator(style: .medium)
         generator.impactOccurred()
     }
+    
+    // MARK: - Setup Methods
     
     private func setupUI() {
         addSubview(stackView)
@@ -94,7 +91,22 @@ final class CreateView: UIView {
             stackView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
         ])
     }
+    
+    private func addCancelButtonToKeyboard(textView: UITextView) {
+        let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: Sizes.toolbarHeight))
+        let cancelButton = UIBarButtonItem(
+            image: UIImage(systemName: "keyboard.chevron.compact.down"),
+            primaryAction: cancelAction)
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace,
+                                            target: nil,
+                                            action: nil)
+        toolBar.tintColor = Color.yellow
+        toolBar.items = [flexibleSpace, cancelButton]
+        textView.inputAccessoryView = toolBar
+    }
 }
+
+// MARK: - UITextViewDelegate
 
 extension CreateView: UITextViewDelegate {
     

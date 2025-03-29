@@ -7,6 +7,8 @@
 
 import CoreData
 
+// MARK: - Protocol
+
 protocol CoreDataManagerInput {
     func createFetchedResultsController() -> NSFetchedResultsController<Task>
     func createSearchFetchedResultsController(searchText: String) -> NSFetchedResultsController<Task>
@@ -18,6 +20,8 @@ protocol CoreDataManagerInput {
     func deleteTask(with task: TaskEntity)
     func getCountOfEntities() -> Int
 }
+
+// MARK: CoreData Manager
 
 class CoreDataManager: CoreDataManagerInput {
     
@@ -74,6 +78,10 @@ class CoreDataManager: CoreDataManagerInput {
         }
     }
     
+    // MARK: - FetchedResultsControllers
+    
+    /// General FRC
+    
     func createFetchedResultsController() -> NSFetchedResultsController<Task> {
         let taskFetchRequest = Task.fetchRequest()
         let sortDescriptor = NSSortDescriptor(key: "date", ascending: false)
@@ -82,6 +90,8 @@ class CoreDataManager: CoreDataManagerInput {
         let resultController = NSFetchedResultsController(fetchRequest: taskFetchRequest, managedObjectContext: viewContext, sectionNameKeyPath: nil, cacheName: nil)
         return resultController
     }
+    
+    ///FRC for searching
     
     func createSearchFetchedResultsController(searchText: String) -> NSFetchedResultsController<Task> {
         let searchFetchRequest = Task.fetchRequest()
@@ -94,6 +104,10 @@ class CoreDataManager: CoreDataManagerInput {
         let searchController = NSFetchedResultsController(fetchRequest: searchFetchRequest, managedObjectContext: viewContext, sectionNameKeyPath: nil, cacheName: nil)
         return searchController
     }
+    
+    // MARK: - CRUD Operations
+    
+    /// First save from network
     
     func saveFetchedTask(with task: TaskEntity) {
         let backgroundContext = backgroundContext
@@ -131,6 +145,8 @@ class CoreDataManager: CoreDataManagerInput {
             }
         }
     }
+    
+    /// Saving new task
     
     func saveNewTask(with task: TaskEntity) {
         let backgroundContext = backgroundContext
@@ -171,6 +187,8 @@ class CoreDataManager: CoreDataManagerInput {
             }
         }
     }
+    
+    ///update completed status
     
     func updateStatusOfTasks(with tasks: [TaskEntity]) {
         let backgroundContext = backgroundContext
@@ -238,6 +256,8 @@ class CoreDataManager: CoreDataManagerInput {
         }
     }
     
+    // MARK: - Utility Methods
+
     func getCountOfEntities() -> Int {
         let context = backgroundContext
         let fetchRequest = Task.fetchRequest()
