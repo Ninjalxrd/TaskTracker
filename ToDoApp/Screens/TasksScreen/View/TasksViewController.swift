@@ -24,15 +24,14 @@
             tasksView.tasksTableView.dataSource = tableViewDataSource
             setupTabBar()
             setupOnCellSelected()
-            setupSearchBar()
         }
         
         override func viewWillAppear(_ animated: Bool) {
             super.viewWillAppear(animated)
             presenter.fetchTasks()
+            setupSearchBar()
             setupCountOfTasks()
         }
-
         
         private func setupTabBar() {
             tabBarController?.tabBar.tintColor = Color.yellow
@@ -47,6 +46,7 @@
                 let cell = tableView.dequeueReusableCell(withIdentifier: TasksTableViewCell.identifier, for: indexPath)
                 as! TasksTableViewCell
                 cell.configureCell(with: task)
+                cell.setupCompletedCells(with: task)
                 self?.setupCheckmarkButton(for: cell, task: task)
                 self?.setupInteractionMenu(for: cell, task: task)
                 return cell
@@ -57,7 +57,7 @@
             var snapshot = NSDiffableDataSourceSnapshot<Int, TaskEntity>()
             snapshot.appendSections([0])
             snapshot.appendItems(tasks)
-            tableViewDataSource?.apply(snapshot, animatingDifferences: false)
+            self.tableViewDataSource?.apply(snapshot, animatingDifferences: false)
         }
         
         func setupOnCellSelected() {
@@ -76,11 +76,14 @@
             cell.onShareAction = { [weak self] in
                 guard let self else { return }
                 self.presenter.shareTask(task: task, view: self.tasksView)
-                
             }
             
             cell.onDeleteAction = { [weak self] in
-                self?.presenter.deleteTask(task: task)
+                guard let self else { return }
+                var snapshot = self.tableViewDataSource?.snapshot()
+                snapshot?.deleteItems([task])
+                self.tableViewDataSource?.apply(snapshot!, animatingDifferences: true)
+                self.presenter.deleteTask(task: task)
             }
         }
         
@@ -88,11 +91,18 @@
             cell.onUpdateCheckmarkButton = { [weak self] isCompleted in
                 guard let self else { return }
                 self.presenter.updateCheckmarkState(with: task, isCompleted: isCompleted)
+                
+                DispatchQueue.main.async {
+                    var updatedTask = task
+                    updatedTask.completed = isCompleted
+                    cell.setupCompletedCells(with: updatedTask)
+                }
             }
         }
         
         func setupSearchBar() {
-            tasksView.textDidChange = {[weak self] searchText in
+            tasksView.searchBar.text = ""
+            tasksView.textDidChange = { [weak self] searchText in
                 self?.presenter.searchTask(searchText: searchText)
             }
         }

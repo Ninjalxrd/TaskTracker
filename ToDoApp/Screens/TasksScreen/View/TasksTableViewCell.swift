@@ -9,12 +9,12 @@ import UIKit
 
 final class TasksTableViewCell: UITableViewCell {
     
-    var onUpdateCheckmarkButton: ((_ isCompleted: Bool) -> Void)?
     var isCompleted: Bool = false {
         didSet {
             updateCheckmarkUI()
         }
     }
+    var onUpdateCheckmarkButton: ((_ isCompleted: Bool) -> Void)?
     var onDeleteAction: (() -> Void)?
     var onEditAction: (() -> Void)?
     var onShareAction: (() -> Void)?
@@ -36,6 +36,7 @@ final class TasksTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        contentView.backgroundColor = UIColor(named: "backgroundColor")
         isCompleted = false
         taskDateLabel.text = nil
         taskTitleLabel.text = nil
@@ -67,7 +68,10 @@ final class TasksTableViewCell: UITableViewCell {
     private lazy var onCheckmarkTappedAction = UIAction { [weak self] _ in
         guard let self else { return }
         isCompleted.toggle()
-        self.updateCheckmarkUI()
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.updateCheckmarkUI()
+        }
         self.onUpdateCheckmarkButton?(isCompleted)
         let generator = UIImpactFeedbackGenerator(style: .medium)
         generator.impactOccurred()
@@ -123,11 +127,11 @@ final class TasksTableViewCell: UITableViewCell {
         
         NSLayoutConstraint.activate([
             checkmarkButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            checkmarkButton.topAnchor.constraint(equalTo: contentView.topAnchor),
+            checkmarkButton.centerYAnchor.constraint(equalTo: taskStackView.centerYAnchor),
             checkmarkButton.widthAnchor.constraint(equalToConstant: Sizes.checkmarkButtonWidth),
             checkmarkButton.heightAnchor.constraint(equalToConstant: Sizes.checkmarkButtonHeight),
             
-            taskStackView.topAnchor.constraint(equalTo: contentView.topAnchor,constant: Constants.taskStackViewVerticalConstant),
+            taskStackView.topAnchor.constraint(equalTo: contentView.topAnchor),
             taskStackView.leadingAnchor.constraint(equalTo: checkmarkButton.trailingAnchor, constant: Constants.taskStackViewConstant),
             taskStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             taskStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constants.taskStackViewVerticalConstant)
@@ -140,6 +144,26 @@ final class TasksTableViewCell: UITableViewCell {
         taskDateLabel.text = DateFormatterHelper.formattedRecievedDate(date: task.date ?? Date.now)
         taskDescriptionLabel.text = task.description
     }
+    
+    func setupCompletedCells(with task: TaskEntity) {
+        if task.completed {
+            let text = NSAttributedString(string: taskTitleLabel.text ?? "", attributes: [
+                .strikethroughStyle: NSUnderlineStyle.single.rawValue,
+                .strikethroughColor: Color.lightGray ?? UIColor.lightGray,
+            ])
+            taskTitleLabel.attributedText = text
+            taskTitleLabel.textColor = Color.lightGray
+            taskDescriptionLabel.textColor = Color.lightGray
+        } else {
+            let text = NSAttributedString(string: taskTitleLabel.text ?? "", attributes: [
+                .strikethroughColor: UIColor.clear,
+            ])
+            taskTitleLabel.textColor = UIColor(named: "textColor")
+            taskTitleLabel.attributedText = text
+            taskDescriptionLabel.textColor = UIColor(named: "textColor")
+        }
+    }
+
 }
 
 extension TasksTableViewCell: UIContextMenuInteractionDelegate {

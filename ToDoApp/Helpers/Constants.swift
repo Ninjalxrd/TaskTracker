@@ -61,7 +61,7 @@ struct Sizes {
     static let toolbarHeight: CGFloat = 44
     
     //MARK: - ThemeTableViewCell
-    static let containerViewCornerRadius: CGFloat = 16
+    static let containerViewCornerRadius: CGFloat = 24
     static let themeButtonCornerRadius: CGFloat = 16
     static let settingsTableViewHeight: CGFloat = 120
     static let settingsHeightForHeader: CGFloat = 44

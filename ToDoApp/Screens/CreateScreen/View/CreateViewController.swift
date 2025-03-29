@@ -22,6 +22,7 @@ final class CreateEditTaskViewController: UIViewController, CreatePresenterOutpu
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationBar()
+        setupDoneButtonAction()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -40,11 +41,7 @@ final class CreateEditTaskViewController: UIViewController, CreatePresenterOutpu
     }
     
     func saveTaskData() {
-        guard let text = createView.textView.text, text != "" else {
-            createPresenter.showAlert(title: "Заметка не может быть пустой",
-                                       message: "Напишите что-нибудь")
-            return
-        }
+        guard let text = createView.textView.text, text != "" else { return }
         let (title, description) = createView.separateTitleWithDescription(from: text)
 
             let newTask = TaskEntity(
@@ -58,6 +55,18 @@ final class CreateEditTaskViewController: UIViewController, CreatePresenterOutpu
         
         createPresenter.saveNewTask(with: newTask)
         saveOverlay.show(in: createView, with: 1.5)
+    }
+    
+    private func setupDoneButtonAction() {
+        createView.onDoneButtonTapped = { [weak self] in
+            guard let text = self?.createView.textView.text, text != "" else {
+                self?.createPresenter.showAlert(
+                    title: "Заметка не может быть пустой",
+                    message: "Напишите что-нибудь"
+                )
+                return
+            }
+        }
     }
     
     

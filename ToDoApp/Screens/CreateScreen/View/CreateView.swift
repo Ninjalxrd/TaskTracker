@@ -8,6 +8,8 @@
 import UIKit
 
 final class CreateView: UIView {
+    
+    var onDoneButtonTapped: (() -> Void)?
         
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -77,6 +79,7 @@ final class CreateView: UIView {
     
     private lazy var doneActionButton = UIAction {[weak self] _ in
         self?.endEditing(true)
+        self?.onDoneButtonTapped?()
         let generator = UIImpactFeedbackGenerator(style: .medium)
         generator.impactOccurred()
     }

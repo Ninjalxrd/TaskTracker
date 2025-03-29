@@ -8,8 +8,6 @@
 import UIKit
 
 class SettingsView: UIView {
-
-    //table view with sections, first section - theme type, second - accent color
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -25,7 +23,6 @@ class SettingsView: UIView {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.delegate = self
         tableView.register(ThemeTableViewCell.self, forCellReuseIdentifier: ThemeTableViewCell.identifier)
-//        tableView.register(<#T##nib: UINib?##UINib?#>, forCellReuseIdentifier: <#T##String#>)
         tableView.separatorColor = .clear
         tableView.backgroundColor = UIColor(named: "backgroundColor")
         return tableView
@@ -74,6 +71,7 @@ extension SettingsView: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        
         if section == 0 {
             return Sizes.settingsHeightForHeader
         }
