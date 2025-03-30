@@ -32,24 +32,24 @@ Long-press any note to share via AirDrop, Messages, or your favorite apps.
 
 
 🔧 **Stack**
-Built with Apple's Best:
-→ VIPER architecture for rock-solid stability
-→ UIKit
-→ Network
-→ NSFetchedResultsController
-→ Custom UI components: Save Overlay, Activity Indicator
+Built with Apple's Best:<br>
+→ VIPER architecture for rock-solid stability<br>
+→ UIKit<br>
+→ Network<br>
+→ NSFetchedResultsController<br>
+→ Custom UI components: Save Overlay, Activity Indicator<br>
 <img width="431" alt="Снимок экрана 2025-03-30 в 23 50 25" src="https://github.com/user-attachments/assets/1cf80297-9713-4562-88c9-d22888ad0cb9" />
 
-→ Background GCD operations for seamless performance
-→ Unit Tests
+→ Background GCD operations for seamless performance<br>
+→ Unit Tests<br>
 
-**🎨 Design Philosophy**
-I kept iOS' DNA intact while adding thoughtful enhancements:
-→ System-style animations with custom flair
-→ Adaptive layouts for all screen sizes
-→ Delightful haptic feedback
+**🎨 Design Philosophy**<br>
+I kept iOS' DNA intact while adding thoughtful enhancements:<br>
+→ System-style animations with custom flair<br>
+→ Adaptive layouts for all screen sizes<br>
+→ Delightful haptic feedback<br>
 
-**Perfect For:**
-• Students tracking study sessions
-• Developers logging bug fixes
+**Perfect For:**<br>
+• Students tracking study sessions<br>
+• Developers logging bug fixes<br>
 • Anyone who wants Apple's notes app – but better
