@@ -39,11 +39,6 @@ struct Constants {
     // MARK: - ThemeTableViewCell
     static let themeButtonStackSpacing: CGFloat = 4
     static let themeButtonImageSpacing: CGFloat = 8
-
-
-
-    
-    
 }
 
 struct Sizes {
@@ -85,5 +80,9 @@ struct Sizes {
     static let settingsTableViewHeight: CGFloat = 120
     static let settingsHeightForHeader: CGFloat = 44
     static let themeButtonStackHeight: CGFloat = 80
+    
+    // MARK: - TaskDetailController
+    static let separatorWidth: CGFloat = 45
+
     
 }

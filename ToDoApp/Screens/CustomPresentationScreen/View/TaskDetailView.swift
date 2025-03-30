@@ -269,10 +269,10 @@ private extension TaskDetailView {
     func setupUI() {
         setupSubviews()
         setupConstraints()
+        addGestureRecognizer(downSwipeGestureRecognizer)
     }
     
     func setupSubviews() {
-        addGestureRecognizer(downSwipeGestureRecognizer)
         addSubview(bgView)
         bgView.addSubview(dateStackView)
         bgView.addSubview(deleteTaskButton)
@@ -283,10 +283,10 @@ private extension TaskDetailView {
     
     func setupConstraints() {
         NSLayoutConstraint.activate([
-            bgView.topAnchor.constraint(equalTo: self.topAnchor),
-            bgView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            bgView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            bgView.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor),
+            bgView.topAnchor.constraint(equalTo: topAnchor),
+            bgView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            bgView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            bgView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
         ])
         
         NSLayoutConstraint.activate([
@@ -307,8 +307,8 @@ private extension TaskDetailView {
             firstSeparator.trailingAnchor.constraint(equalTo: timeOfDoingTask.leadingAnchor, constant: -Constants.medium),
             firstSeparator.centerYAnchor.constraint(equalTo: taskDateStackView.centerYAnchor),
             
-            secondSeparator.trailingAnchor.constraint(equalTo: finishedAtDataStackView.leadingAnchor, constant: -Constants.medium),
             secondSeparator.leadingAnchor.constraint(equalTo: timeOfDoingTask.trailingAnchor, constant: Constants.medium),
+            secondSeparator.trailingAnchor.constraint(equalTo: finishedAtDataStackView.leadingAnchor, constant: -Constants.medium),
             secondSeparator.centerYAnchor.constraint(equalTo: taskDateStackView.centerYAnchor),
         ])
     }

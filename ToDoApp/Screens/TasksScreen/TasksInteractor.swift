@@ -54,7 +54,7 @@ final class TasksInteractor: NSObject, TasksInteractorInput {
             return
         }
         
-        self.networkService.obtainTasks { [weak self] result in
+        networkService.obtainTasks { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let tasks):
@@ -69,6 +69,18 @@ final class TasksInteractor: NSObject, TasksInteractorInput {
                 self.presenter.didObtainFailure(error)
             }
         }
+    }
+    
+    func updateCheckmarkState(with tasks: [TaskEntity]) {
+        coreDataManager.updateStatusOfTasks(with: tasks)
+    }
+    
+    func deleteTask(task: TaskEntity) {
+        coreDataManager.deleteTask(with: task)
+    }
+    
+    func getCountOfEntities() -> Int {
+        return coreDataManager.getCountOfEntities()
     }
     
     // MARK: - Search Functionality
@@ -89,18 +101,6 @@ final class TasksInteractor: NSObject, TasksInteractorInput {
                 self?.presenter.didObtainTasks(searchedTasks.map { $0.toEntity() })
             }
         }
-    }
-    
-    func updateCheckmarkState(with tasks: [TaskEntity]) {
-        coreDataManager.updateStatusOfTasks(with: tasks)
-    }
-    
-    func deleteTask(task: TaskEntity) {
-        coreDataManager.deleteTask(with: task)
-    }
-    
-    func getCountOfEntities() -> Int {
-        return coreDataManager.getCountOfEntities()
     }
 }
 

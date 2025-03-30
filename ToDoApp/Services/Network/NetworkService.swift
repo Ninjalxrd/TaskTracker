@@ -13,7 +13,8 @@ protocol NetworkServiceInput {
 
 final class NetworkService: NetworkServiceInput {
     
-    private let session: URLSession = URLSession(configuration: .default)
+    var session: URLSession = URLSession(configuration: .default)
+    
     private lazy var jsonDecoder: JSONDecoder = {
         let decoder = JSONDecoder()
         return decoder
