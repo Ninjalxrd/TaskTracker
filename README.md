@@ -29,7 +29,9 @@ Powerful search digs through tasks faster than Spotlight finds files.
 Long-press any note to share via AirDrop, Messages, or your favorite apps.
 
 <img width="431" alt="Снимок экрана 2025-03-30 в 23 47 04" src="https://github.com/user-attachments/assets/ee71a8d4-c2b9-460f-9aef-6a83a46d7db8" />
-**🔧 Stack**
+
+
+🔧 **Stack**
 Built with Apple's Best:
 → VIPER architecture for rock-solid stability
 → UIKit
