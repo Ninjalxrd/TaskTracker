@@ -2,7 +2,7 @@
 
 Your Classic iOS Notes App – Enhanced
 
-Stay organized effortlessly with TaskTracker – the familiar iOS experience you love, now supercharged with smart features:\n
+Stay organized effortlessly with TaskTracker – the familiar iOS experience you love, now supercharged with smart features:
 
 **✨ Key Features**
 
