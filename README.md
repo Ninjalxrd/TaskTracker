@@ -1,10 +1,10 @@
-TaskTracker 📝\n
-Your Classic iOS Notes App – Enhanced\n
+**TaskTracker** 📝
+Your Classic iOS Notes App – Enhanced
 
 Stay organized effortlessly with TaskTracker – the familiar iOS experience you love, now supercharged with smart features:\n
 
-✨ Key Features\n
-✅ Time Tracking Magic\n
+✨ Key Features
+✅ Time Tracking Magic
 Know exactly how long you spend on tasks – perfect for productivity analysis!
 
 ✅ Personalized Aesthetics
@@ -16,13 +16,13 @@ Instant visual confirmation ensures your notes are safely stored in CoreData.
 ✅ Universal Sync
 Access notes from any device – locally stored, network-synced, always available.
 
-✅ Never Lose Anything\n
+✅ Never Lose Anything
 Powerful search digs through tasks faster than Spotlight finds files.
 
-✅ Share in Style\n
+✅ Share in Style
 Long-press any note to share via AirDrop, Messages, or your favorite apps.
 
-🔧 Stack\n
+🔧 Stack
 Built with Apple's Best:
 → VIPER architecture for rock-solid stability
 → UIKit
