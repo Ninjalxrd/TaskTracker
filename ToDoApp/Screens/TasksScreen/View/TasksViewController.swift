@@ -53,8 +53,10 @@ final class TasksViewController: UIViewController, TasksPresenterOutput {
             cell.setupCompletedCells(with: task)
             self?.setupCheckmarkButton(for: cell, task: task)
             self?.setupInteractionMenu(for: cell, task: task)
+            self?.tasksView.activityIndicator.stopAnimating()
             return cell
         })
+        
     }
     
     func updateDataSource(with tasks: [TaskEntity]) {

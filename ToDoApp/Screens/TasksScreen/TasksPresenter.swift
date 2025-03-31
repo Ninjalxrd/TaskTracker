@@ -46,9 +46,7 @@ final class TasksPresenter: TasksPresenterInput {
         var updatedTask = task
         updatedTask.completed = isCompleted
         updatedTask.finishedAt = isCompleted ? Date.now : nil
-        DebounceSaveManager.shared.scheduleSaveCompletedState(for: task, isCompleted: isCompleted) { [weak self] tasksToSave in
-            self?.interactor.updateCheckmarkState(with: tasksToSave)
-        }
+        interactor.updateCheckmarkState(with: updatedTask)
     }
     
     // MARK: - Task Selection and Navigation

@@ -15,7 +15,7 @@ protocol CoreDataManagerInput {
     func saveFetchedTask(with task: TaskEntity)
     func saveNewTask(with task: TaskEntity)
     func obtainTask(for taskId: UUID, completion: @escaping (Result<Task,Error>) -> Void)
-    func updateStatusOfTasks(with tasks: [TaskEntity])
+    func updateStatusOfTasks(with task: TaskEntity)
     func updateTask(with task: TaskEntity)
     func deleteTask(with task: TaskEntity)
     func getCountOfEntities() -> Int
@@ -190,15 +190,15 @@ class CoreDataManager: CoreDataManagerInput {
     
     ///update completed status
     
-    func updateStatusOfTasks(with tasks: [TaskEntity]) {
+    func updateStatusOfTasks(with task: TaskEntity) {
         let backgroundContext = backgroundContext
         backgroundContext.perform {
             let fetchRequest = Task.fetchRequest()
             do {
                 let storedTasks = try backgroundContext.fetch(fetchRequest)
                 for storedTask in storedTasks {
-                    if let updatedTask = tasks.first(where: { $0.localId == storedTask.localId }) {
-                        storedTask.completed = updatedTask.completed
+                    if task.localId == storedTask.localId {
+                        storedTask.completed = task.completed
                     }
                 }
                 try backgroundContext.save()
@@ -264,7 +264,7 @@ class CoreDataManager: CoreDataManagerInput {
         
         do {
             let count = try context.count(for: fetchRequest)
-            return count
+                return count
         } catch {
             print("Error counting entities: \(error)")
             return 0

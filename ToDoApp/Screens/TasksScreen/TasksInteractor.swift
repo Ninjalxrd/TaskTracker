@@ -12,7 +12,7 @@ import UIKit
     //MARK: - Protocols
 protocol TasksInteractorInput {
     func obtainTasks()
-    func updateCheckmarkState(with tasks: [TaskEntity])
+    func updateCheckmarkState(with task: TaskEntity)
     func deleteTask(task: TaskEntity)
     func searchTask(searchText: String)
     func getCountOfEntities() -> Int
@@ -71,8 +71,8 @@ final class TasksInteractor: NSObject, TasksInteractorInput {
         }
     }
     
-    func updateCheckmarkState(with tasks: [TaskEntity]) {
-        coreDataManager.updateStatusOfTasks(with: tasks)
+    func updateCheckmarkState(with task: TaskEntity) {
+        coreDataManager.updateStatusOfTasks(with: task)
     }
     
     func deleteTask(task: TaskEntity) {
@@ -80,7 +80,7 @@ final class TasksInteractor: NSObject, TasksInteractorInput {
     }
     
     func getCountOfEntities() -> Int {
-        return coreDataManager.getCountOfEntities()
+        coreDataManager.getCountOfEntities()
     }
     
     // MARK: - Search Functionality
